@@ -18,7 +18,7 @@
 					<input type="text" name="name" value="" id="name"><br>
 					<label for="password">削除用パスワード</label>
 					<input type="password" name="password" value=""><br>
-					<textarea name="text" rows="8" cols="40" placeholder="ここにコメントを記入してください。"></textarea><br>
+					<textarea name="body" rows="8" cols="40" placeholder="ここにコメントを記入してください。"></textarea><br>
 					<button type="submit" name="submit" id="submit">書き込む</button>
 				</form>
 				<p id ="close_modal">Close</p>
