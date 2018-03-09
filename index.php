@@ -42,5 +42,7 @@
 				<button id="load_more">全件表示</button>
 			</div><!-- posts -->
 		</div><!-- main -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="actions.js"></script>
 	</body>
 </html>
