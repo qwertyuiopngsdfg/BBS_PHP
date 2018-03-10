@@ -2,6 +2,21 @@
 require_once('config.php');
 require_once('actions.php');
 
+function h($s){
+  return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
+}
+
+try {
+	$pdo = new PDO(DSN, DB_USER, DB_PASS);
+	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	$sql_result = $pdo->query("select * from users order by id desc limit 5");
+	$post = $pdo->query("select * from users");
+	$posts = $post->fetchAll();
+	$post_num = count($posts);
+	$i = -1;
+} catch (Exception $e) {
+	echo $e->getMessage() . PHP_EOL;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$message = $_POST;
@@ -9,11 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$ptm->post($message);
 }
 
-
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="ja">
@@ -45,15 +56,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				<h2>投稿する</h2>
 			</div>
 			<div id="posts">
-				<p>まだ投稿はありません..(p_q)</p>
+				<?php if ($post_num == 0): ?>
+				<p>まだ投稿はありません。</p>
+				<?php endif; ?>
 				<dl>
+					<?php foreach ($sql_result as $row) : ?>
+					<?php $i++ ?>
 					<dt>
-						<span style="color: #e67e22; margin-right:10px;">1</span><span style="color: #e67e22;">名前：名無し</span> <span style ="font-size: 15px; color: #a0a0a0;">2017/03/09 ID:qwertyuio</span><br>
+						<span style="color: #e67e22; margin-right:10px;"><?= $post_num - $i; ?></span><span style="color: #e67e22;">名前：<?= h($row["name"]) ?></span>
+						<span style ="font-size: 15px; color: #a0a0a0;"><?= h($row["created"])?> ID:qwertyuio</span><br>
 					</dt>
 					<dd>
-						こんにちわ
+						<?=  nl2br(h($row["body"])) ?>
 						<a href="">削除</a>
 					</dd>
+					<?php endforeach; ?>
 				</dl>
 				<div id="load_result"></div>
 				<button id="load_more">全件表示</button>
