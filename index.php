@@ -1,3 +1,20 @@
+<?php
+require_once('config.php');
+require_once('actions.php');
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+	$message = $_POST;
+	$ptm = new PostTheMessage();
+	$ptm->post($message);
+}
+
+
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="ja">
 	<head>
@@ -13,7 +30,7 @@
 		</div><!-- header -->
 		<div id="main">
 			<div id ="modal" class ="hidden">
-				<form action="actions.php" method="post">
+				<form action="" method="post">
 					<label for="name">名前</label>
 					<input type="text" name="name" value="" id="name"><br>
 					<label for="password">削除用パスワード</label>
