@@ -16,14 +16,12 @@ try {
   echo $e->getMessage() . PHP_EOL;
 }
 
-
 $ptm = new PostTheMessage();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$message = $_POST;
 	$ptm->post($message);
 }
-
 
 ?>
 
@@ -69,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					</dt>
 					<dd class = "postrow <?php if ($i > 4) { echo 'post_hidden'; } ?>"><!-- 5件以上は非表示にする。 -->
 						<?=  nl2br(h($row["body"])) ?>
-						<a href="">削除</a>
+						<a href="delete.php?id=<?= h($row["id"]) ?>">削除</a>
 					</dd>
           <?php $i++ ?>
 					<?php endforeach; ?>
