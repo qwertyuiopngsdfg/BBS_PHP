@@ -230,3 +230,7 @@ dd {
   top: -webkit-calc(100% - 3px);
   top: calc(100% - 3px);
 }
+
+.post_hidden {
+  display: none !important;
+}

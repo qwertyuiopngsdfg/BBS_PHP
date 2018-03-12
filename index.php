@@ -1,4 +1,5 @@
 <?php
+
 require_once('config.php');
 require_once('actions.php');
 
@@ -7,22 +8,22 @@ function h($s){
 }
 
 try {
-	$pdo = new PDO(DSN, DB_USER, DB_PASS);
-	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$sql_result = $pdo->query("select * from users order by id desc limit 5");
-	$post = $pdo->query("select * from users");
-	$posts = $post->fetchAll();
-	$post_num = count($posts);
-	$i = -1;
+  $pdo = new PDO(DSN, DB_USER, DB_PASS);
+  $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  $result = $pdo->query("select * from users order by id desc");
+  $count = $result->rowCount();
 } catch (Exception $e) {
-	echo $e->getMessage() . PHP_EOL;
+  echo $e->getMessage() . PHP_EOL;
 }
+
+
+$ptm = new PostTheMessage();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$message = $_POST;
-	$ptm = new PostTheMessage();
 	$ptm->post($message);
 }
+
 
 ?>
 
@@ -37,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	<body>
 		<div id="header">
 			<h1>掲示板</h1>
-			<p>現在の投稿<span>0</span>件</p>
+			<p>現在の投稿<span><?= $count; ?></span>件</p>
 		</div><!-- header -->
 		<div id="main">
 			<div id ="modal" class ="hidden">
@@ -56,20 +57,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				<h2>投稿する</h2>
 			</div>
 			<div id="posts">
-				<?php if ($post_num == 0): ?>
+				<?php if ($count == 0): ?>
 				<p>まだ投稿はありません。</p>
 				<?php endif; ?>
 				<dl>
-					<?php foreach ($sql_result as $row) : ?>
-					<?php $i++ ?>
-					<dt>
-						<span style="color: #e67e22; margin-right:10px;"><?= $post_num - $i; ?></span><span style="color: #e67e22;">名前：<?= h($row["name"]) ?></span>
+          <?php $i = 0; ?>
+					<?php foreach ($result as $row) : ?>
+					<dt class = "postrow <?php if ($i > 4) { echo 'post_hidden'; } ?>"> <!-- 5件以上は非表示にする。 -->
+						<span style="color: #e67e22; margin-right:10px;"><?= $count - $i; ?></span><span style="color: #e67e22;">名前：<?= h($row["name"]) ?></span>
 						<span style ="font-size: 15px; color: #a0a0a0;"><?= h($row["created"])?> ID:qwertyuio</span><br>
 					</dt>
-					<dd>
+					<dd class = "postrow <?php if ($i > 4) { echo 'post_hidden'; } ?>"><!-- 5件以上は非表示にする。 -->
 						<?=  nl2br(h($row["body"])) ?>
 						<a href="">削除</a>
 					</dd>
+          <?php $i++ ?>
 					<?php endforeach; ?>
 				</dl>
 				<div id="load_result"></div>

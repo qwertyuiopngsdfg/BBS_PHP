@@ -13,4 +13,11 @@ $(function(){
   $("#mask").click(function(){
     $("#close_modal").click();
   });
+
+  $("#load_more").click(function(){
+    $("dd").removeClass("post_hidden");
+    $("dt").removeClass("post_hidden");
+    $("#load_more").addClass("post_hidden");
+  });
+
 });

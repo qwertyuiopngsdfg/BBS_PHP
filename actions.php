@@ -1,4 +1,5 @@
 <?php
+
 class PostTheMessage {
 
   public function post($message){
@@ -8,7 +9,7 @@ class PostTheMessage {
       // save
       $this->_save($validated_message);
       // redirect
-      header('Location:http://192.168.33.10:8000/');
+      header('Location:http://192.168.33.10:8000/');//ホームに戻る。
       exit;
     } catch (\Exception $e) {
       echo $e->getMessage();
@@ -38,8 +39,6 @@ class PostTheMessage {
       $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       $stmt = $pdo->prepare("insert into users(name, body, password) values(?, ?, ?)");
       $stmt->execute([$v_message["name"], $v_message["body"], $v_message["password"]]);
-      header("Location: http://192.168.33.10:8000/");
-      exit;
     } catch (Exception $e) {
       echo $e->getMessage() . PHP_EOL;
       exit;
