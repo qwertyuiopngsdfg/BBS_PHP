@@ -18,17 +18,16 @@ class PostTheMessage {
   }
 
   private function _validatePost($post) {
-    if (mb_strlen(trim($post["password"])) === 4) {
-      $post["password"] = password_hash(trim($post["password"]), PASSWORD_DEFAULT);
-      var_dump($post["password"]);
+    if (mb_strlen($post["password"]) > 7 ) {
+      $post["password"] = password_hash($post["password"], PASSWORD_DEFAULT);
     } else {
-      throw new \Exception('Error');
+      throw new \Exception('8文字以上のパスワードを設定してね。');
     }
     if(empty(trim($post["name"])) || mb_strlen($post["name"]) > 15){
-      throw new \Exception('Error!');
+      throw new \Exception('名前長すぎるか入力してないよ。');
     }
     if (empty(trim($post["body"])) || mb_strlen($post["body"]) > 255) {
-    throw new \Exception('Error!');
+    throw new \Exception('文章長すぎるか入力してないよ。');
     }
     return $post;
   }
