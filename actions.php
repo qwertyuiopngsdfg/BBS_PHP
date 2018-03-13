@@ -1,4 +1,16 @@
 <?php
+require_once('config.php');
+
+function h($s){
+  return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
+}
+
+try {
+  $pdo = new PDO(DSN, DB_USER, DB_PASS);
+  $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);;
+} catch (Exception $e) {
+  echo $e->getMessage() . PHP_EOL;
+}
 
 class PostTheMessage {
 
@@ -23,8 +35,8 @@ class PostTheMessage {
     } else {
       throw new \Exception('8文字以上のパスワードを設定してね。');
     }
-    if(empty(trim($post["name"])) || mb_strlen($post["name"]) > 15){
-      throw new \Exception('名前長すぎるか入力してないよ。');
+    if(mb_strlen($post["name"]) > 15){
+      throw new \Exception('名前長すぎるよ。');
     }
     if (empty(trim($post["body"])) || mb_strlen($post["body"]) > 255) {
     throw new \Exception('文章長すぎるか入力してないよ。');
@@ -36,8 +48,13 @@ class PostTheMessage {
     try {
       $pdo = new PDO(DSN, DB_USER, DB_PASS);
       $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-      $stmt = $pdo->prepare("insert into users(name, body, password) values(?, ?, ?)");
-      $stmt->execute([$v_message["name"], $v_message["body"], $v_message["password"]]);
+      if (empty($v_message['name'])) { //名無しの場合
+        $stmt = $pdo->prepare("insert into users(body, password) values(?, ?)");
+        $stmt->execute([$v_message["body"], $v_message["password"]]);
+      }else{ //名前が入力されている場合
+        $stmt = $pdo->prepare("insert into users(name, body, password) values(?, ?, ?)");
+        $stmt->execute([$v_message["name"], $v_message["body"], $v_message["password"]]);
+      }
     } catch (Exception $e) {
       echo $e->getMessage() . PHP_EOL;
       exit;

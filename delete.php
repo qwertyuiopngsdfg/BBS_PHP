@@ -1,6 +1,5 @@
 <?php
 
-require_once('config.php');
 require_once('actions.php');
 
 function h($s){
@@ -14,16 +13,10 @@ if (is_numeric($_GET["id"])) {
   exit;
 }
 
-try {
-  $pdo = new PDO(DSN, DB_USER, DB_PASS);
-  $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-  $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id");
-  $stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
-  $stmt->execute();
-  $row = $stmt->fetch(PDO::FETCH_ASSOC);
-} catch (Exception $e) {
-  echo $e->getMessage() . PHP_EOL;
-}
+$stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id");
+$stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
+$stmt->execute();
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if(password_verify($_POST['password'], $row['password'])) {
@@ -50,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <dl>
       <dt>
         <span style="color: #e67e22;">名前：<?= h($row["name"]) ?></span>
-        <span style ="font-size: 15px; color: #a0a0a0;"><?= h($row["created"])?> ID:qwertyuio</span><br>
+        <span style ="font-size: 15px; color: #a0a0a0;"><?= h($row["created"])?></span><br>
       </dt>
       <dd>
         <?=  nl2br(h($row["body"])) ?>

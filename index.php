@@ -1,15 +1,8 @@
 <?php
 
-require_once('config.php');
 require_once('actions.php');
 
-function h($s){
-  return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
-}
-
 try {
-  $pdo = new PDO(DSN, DB_USER, DB_PASS);
-  $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   $result = $pdo->query("select * from users order by id desc");
   $count = $result->rowCount();
 } catch (Exception $e) {
@@ -63,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					<?php foreach ($result as $row) : ?>
 					<dt class = "postrow <?php if ($i > 4) { echo 'post_hidden'; } ?>"> <!-- 5件以上は非表示にする。 -->
 						<span style="color: #e67e22; margin-right:10px;"><?= $count - $i; ?></span><span style="color: #e67e22;">名前：<?= h($row["name"]) ?></span>
-						<span style ="font-size: 15px; color: #a0a0a0;"><?= h($row["created"])?> ID:qwertyuio</span><br>
+						<span style ="font-size: 15px; color: #a0a0a0;"><?= h($row["created"])?> </span><br>
 					</dt>
 					<dd class = "postrow <?php if ($i > 4) { echo 'post_hidden'; } ?>"><!-- 5件以上は非表示にする。 -->
 						<?=  nl2br(h($row["body"])) ?>
