@@ -2,10 +2,6 @@
 
 require_once('actions.php');
 
-function h($s){
-  return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
-}
-
 if (is_numeric($_GET["id"])) {
   $user_id = $_GET["id"];
 } else {
