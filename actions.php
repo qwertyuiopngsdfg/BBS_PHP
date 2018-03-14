@@ -1,8 +1,13 @@
 <?php
+
 require_once('config.php');
 
 function h($s){
   return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
+}
+
+function e($word, &$previous = null) {
+    return new Exception($word, 0, $previous);
 }
 
 try {
@@ -24,27 +29,35 @@ class PostTheMessage {
       header('Location:http://192.168.33.10:8000/');//ホームに戻る。
       exit;
     } catch (\Exception $e) {
-      echo $e->getMessage();
-      exit;
+      echo $e->getMessage() . PHP_EOL;
     }
   }
 
   private function _validatePost($post) {
-    if (mb_strlen($post["password"]) > 7 ) {
-      $post["password"] = password_hash($post["password"], PASSWORD_DEFAULT);
-    } else {
-      throw new \Exception('8文字以上のパスワードを設定してね。');
+    try {
+      if (mb_strlen($post["password"]) > 7 ) {
+        $post["password"] = password_hash($post["password"], PASSWORD_DEFAULT);
+      } else {
+        $e = e('8文字以上のパスワードを設定してね。', $e);
+      }
+      if(mb_strlen($post["name"]) > 15){
+        $e = e('名前が長すぎるよ', $e);
+      }
+      if (empty(trim($post["body"])) || mb_strlen($post["body"]) > 255) {
+        $e = e('文章長すぎるか入力してないよ。', $e);
+      }
+
+      if ($e) {
+        throw $e;
+      }
+
+      return $post;
+    } catch (\Exception $e) {
+      die(implode("<br />\n", $this->_exceptionToArray($e) ));
     }
-    if(mb_strlen($post["name"]) > 15){
-      throw new \Exception('名前長すぎるよ。');
-    }
-    if (empty(trim($post["body"])) || mb_strlen($post["body"]) > 255) {
-    throw new \Exception('文章長すぎるか入力してないよ。');
-    }
-    return $post;
   }
 
-  public function _save($v_message) {
+  private function _save($v_message) {
     try {
       $pdo = new PDO(DSN, DB_USER, DB_PASS);
       $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -61,4 +74,10 @@ class PostTheMessage {
     }
   }
 
+  private function _exceptionToArray(Exception $e) {
+    do {
+        $errors[] = $e->getMessage();
+    } while ($e = $e->getPrevious());
+    return array_reverse($errors);
+  }
 }
